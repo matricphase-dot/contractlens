@@ -43,9 +43,33 @@ function ContractDetail() {
   }, [searchParams]);
 
   async function load() {
+    // Hydrate server from localStorage first (fixes Vercel stateless issue)
+    try {
+      const saved = localStorage.getItem("contractlens:contracts");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          await fetch("/api/contracts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contracts: parsed }),
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {}
     const res = await fetch("/api/contracts");
     const d = await res.json();
-    const c = (d.contracts || []).find((x: Contract) => x.id === params.id);
+    let c = (d.contracts || []).find((x: Contract) => x.id === params.id);
+    // Fallback: pull directly from localStorage if server doesn't have it yet
+    if (!c) {
+      try {
+        const saved = localStorage.getItem("contractlens:contracts");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          c = parsed.find((x: Contract) => x.id === params.id) || null;
+        }
+      } catch (e) {}
+    }
     setContract(c || null);
     setLoading(false);
   }

@@ -20,21 +20,43 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    load();
+    bootstrap();
   }, []);
+
+  // Hydrate server state from localStorage (fixes Vercel stateless lambda persistence)
+  // Then fetch. After fetch, save back to localStorage.
+  async function bootstrap() {
+    try {
+      const saved = localStorage.getItem("contractlens:contracts");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Push saved contracts to server so current lambda has them
+          await fetch("/api/contracts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contracts: parsed }),
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {}
+    await load();
+  }
 
   async function loadDemo() {
     setLoading(true);
-    await fetch("/api/demo", { method: "POST" });
+    await fetch("/api/demo", { method: "POST" }).catch(() => {});
     await load();
   }
 
   async function load() {
     const res = await fetch("/api/contracts");
     const data = await res.json();
-    setContracts(data.contracts || []);
-    setConflicts(detectCrossContractConflicts(data.contracts || []));
+    const list = data.contracts || [];
+    setContracts(list);
+    setConflicts(detectCrossContractConflicts(list));
     setLoading(false);
+    try { localStorage.setItem("contractlens:contracts", JSON.stringify(list)); } catch (e) {}
   }
 
   const upcomingObligations = contracts.flatMap(c =>

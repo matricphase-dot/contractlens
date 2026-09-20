@@ -65,6 +65,21 @@ export default function UploadPage() {
       if (!res.ok) throw new Error("Analysis failed");
       const data = await res.json();
       clearInterval(interval);
+      // Persist new contract to localStorage so it survives stateless lambda cold starts
+      if (data.contract) {
+        try {
+          const existing = JSON.parse(localStorage.getItem("contractlens:contracts") || "[]");
+          const filtered = existing.filter((c: any) => c.id !== data.contract.id);
+          filtered.push(data.contract);
+          localStorage.setItem("contractlens:contracts", JSON.stringify(filtered));
+          // Also seed server so subsequent detail-page fetches in this lambda work
+          await fetch("/api/contracts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contracts: filtered }),
+          }).catch(() => {});
+        } catch (e) {}
+      }
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, status: "done", progress: 100, stage: STAGES.length - 1, contractId: data.contract?.id } : i));
     } catch (e: any) {
       clearInterval(interval);
