@@ -1,56 +1,48 @@
 # ═══════════════════════════════════════════════════════════
-# READ THIS ALOUD WHILE YOU RECORD
-# Pacing: normal speaking voice, ~2:50 total
+# WINNING 3-MIN DEMO SCRIPT — READ SLOWLY, 2:55 TOTAL
+# Open https://contractlens-gray.vercel.app BEFORE recording
 # ═══════════════════════════════════════════════════════════
 
-[0:00] — Start recording on DASHBOARD, wait 1 second then speak:
+[0:00] Start recording on DASHBOARD:
 
-"Contracts are the most important document in business — and the worst managed. Auto-renewals fire silently. One-sided clauses hide in plain sight. Two contracts renewing three days apart? Nobody sees it until legal is drowning.
+"Contracts are the most important document in business — and the worst managed. Every year businesses lose millions to auto-renewals they missed, one-sided clauses they didn't spot, and missing clauses nobody checked for. Lawyers charge $400+ an hour to find these things.
 
-I built ContractLens — a proactive AI agent that doesn't just read contracts, it stays on the job."
+I built ContractLens — a proactive AI agent that finds your risk BEFORE it costs you money. This is my dashboard."
 
-[0:20] — Pause, mouse slowly over the health score / hero card:
+[0:18] Mouse over portfolio stats slowly:
 
-"The dashboard shows your Contract Health Score at a glance, the agent monitoring status, upcoming deadlines, and cross-contract conflicts that no single-contract tool would ever detect. Right now the agent has flagged that two of my contracts have health scores below 65."
+"Right now the agent is watching three contracts. Portfolio health is 65 out of 100. But here's the number that matters:"
 
-[0:35] — Click "Upload Contracts" in sidebar:
+[0:28] Pause — point at the hero/alert:
 
-"Let me upload a new contract. Watch this:"
+"**$916,000 of quantified downside exposure** across five scenarios: auto-renewal lock-in, uncapped indemnity, late fees, exit costs, missing data protection. The agent found cross-contract conflicts too — none of my contracts have a Data Processing Addendum, which is a GDPR problem."
 
-[0:40] — Click the drop zone (you don't actually need a file since we'll use demo data, OR drag a real PDF). Wait 2 seconds, then:
+[0:45] Click the SaaS MSA contract card:
 
-"As the agent works, you see every stage in real time. Parse. Extract. Classify obligations. Benchmark against market standards. Scan for risks. Prepare an action plan. Activate monitoring. You're not looking at a black box — you can see the agent think."
+"Open the SaaS MSA — health score 49 out of 100. Let me show you what the agent found."
 
-[1:05] — Click "All Contracts" in sidebar:
+[0:55] Click "$$ at Risk" tab:
 
-"Here's my portfolio. Three contracts pre-loaded so every feature works immediately — a SaaS MSA, an employment agreement, an NDA. Each shows its health score."
+"First: **Dollars at Risk.** Every risk has a real number attached. Auto-renewal? $150K locked in if I miss the window. Uncapped indemnification? $500K worst case for IP claims. Total downside on this one contract: $789,500. You don't fix what you don't measure."
 
-[1:15] — Click the first contract (Acme SaaS MSA):
+[1:20] Click "Blind Spots" tab:
 
-"Open the SaaS MSA. The circular gauge shows this contract is at 68 out of 100 — several clauses need attention."
+"**Blind Spot Radar** — my favorite feature. The agent checked this contract against 14 standard SaaS clauses and found FOUR THAT ARE MISSING. No data breach notification timeline. No force majeure clause. No Data Processing Addendum. No clear SLA remedy tier. These aren't 'risks' — they're GAPS. Nobody else finds these automatically."
 
-[1:25] — Click "Benchmarks" tab:
+[1:48] Click on one missing clause, show suggested language:
 
-"Now here's where it gets interesting. The Benchmarks tab compares each clause against a database of over 2,400 real contracts. My Net-15 payment terms? Market is Net 30. My 90-day termination notice? Standard is 30 to 60 days. My auto-renewal notice window? That's neutral but most vendors now send reminders. This is market context almost nobody gives you."
+"For each missing clause it tells me why it matters, how common it is (87% of modern SaaS MSAs have breach notification), and hands me the EXACT suggested language to insert."
 
-[1:55] — Click "Risks" tab, scroll slightly:
+[2:10] Click "Action Center" tab — THE WOW MOMENT:
 
-"The Risks tab doesn't just say 'this is risky' — it explains why in plain English, then gives you a concrete AI recommendation."
+"But an agent doesn't just tell you there's a problem — it ACTS. The Action Center has six ready-to-run actions. Let me run the negotiation playbook."
 
-[2:10] — Click "Action Center" tab. This is the WOW moment. Slow down:
+[2:20] Click "Run" on Negotiation Playbook. Wait for text to generate (2 seconds):
 
-"But here's the real difference. The agent doesn't just tell you there's a problem — it proposes solutions you can run. Let me generate a negotiation playbook."
+"It just wrote a complete playbook: the top three priorities ranked by $$$ impact, the specific language to ask for, leverage points (82% of MSAs have this), fallback positions, even the opening LINE to send. Run the email draft — there's a ready-to-send negotiation email with three specific asks. Run the calendar action and it creates 90/60/30-day renewal reminders so I never miss that $150K opt-out. Run What-If Simulator and I see how each scenario changes my total exposure."
 
-[2:22] — Click "Run" on the negotiation playbook. Wait 2 seconds for it to generate.
+[2:48] Close the action, go back to dashboard briefly:
 
-"It's writing a full playbook: three points to negotiate ranked by leverage, your fallback position, concession strategy, even the opening line. I can copy this straight into an email. Or I can have the agent draft the email itself, calendar the renewal deadlines, write a memo to counsel, or generate a one-pager for finance. One click."
+"And like any good agent, it monitors 24/7, answers natural language questions with cited sources, and compares versions. But the difference is this — most AI tools tell you what's in a contract. ContractLens tells you what's MISSING, what it COSTS you, and what to DO about it. That's an agent."
 
-[2:45] — Click the Ask icon in header OR navigate to /ask:
-
-"I can also ask natural language questions — 'What are the riskiest clauses across my portfolio?' — and get answers with source citations back to the specific section and page. Every claim is auditable."
-
-[2:58] — (If time) Click back to Dashboard:
-
-"This isn't a chatbot that summarizes text. It's an agent that perceives, reasons, acts, and monitors — continuously. That's ContractLens. Thank you."
-
-[3:05] — Stop recording.
+[2:55] Stop recording.
