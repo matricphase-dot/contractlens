@@ -16,12 +16,32 @@ export interface Obligation {
   completed?: boolean;
 }
 
+export interface BlindSpot {
+  id: string;
+  clause: string;
+  riskLevel: "critical" | "high" | "medium" | "low";
+  whyItMatters: string;
+  typicalPresence: string;  // e.g. "92% of SaaS MSAs include this"
+  suggestedLanguage: string;
+}
+
+export interface FinancialExposure {
+  id: string;
+  label: string;
+  amount: number;
+  currency: string;
+  scenario: string;  // what triggers it
+  severity: "critical" | "high" | "medium" | "low";
+  sourceSection: string;
+}
+
 export interface MarketBenchmark {
   clause: string;
   yourTerm: string;
   marketStandard: string;
   favorability: "favorable" | "neutral" | "unfavorable" | "mixed";
   insight: string;
+  financialImpact?: string;
 }
 
 export interface RiskClause {
@@ -33,6 +53,7 @@ export interface RiskClause {
   recommendation: string;
   sourceSection: string;
   pageNumber: number;
+  dollarsAtRisk?: { amount: number; currency: string; basis: string };
 }
 
 export interface KeyDate {
@@ -56,7 +77,7 @@ export interface PaymentTerm {
 
 export interface AgentAction {
   id: string;
-  type: "email-draft" | "calendar-event" | "negotiation-playbook" | "counsel-review" | "summary-report" | "reminder";
+  type: "email-draft" | "calendar-event" | "negotiation-playbook" | "counsel-review" | "summary-report" | "reminder" | "counter-clause" | "whatif";
   title: string;
   description: string;
   status: "suggested" | "generating" | "ready" | "dismissed";
@@ -68,7 +89,7 @@ export interface AgentAction {
 export interface AgentEvent {
   id: string;
   timestamp: string;
-  stage: "parse" | "extract" | "classify" | "benchmark" | "cross-reference" | "recommend" | "monitor";
+  stage: "parse" | "extract" | "classify" | "benchmark" | "cross-reference" | "recommend" | "monitor" | "blind-spots" | "exposure";
   message: string;
   detail?: string;
 }
@@ -90,6 +111,9 @@ export interface Contract {
   obligations: Obligation[];
   riskClauses: RiskClause[];
   benchmarks: MarketBenchmark[];
+  blindSpots: BlindSpot[];
+  financialExposure: FinancialExposure[];
+  totalExposure: { amount: number; currency: string };
   healthScore: number;
   summary: string;
   tags: string[];
@@ -106,6 +130,7 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   citations?: { section: string; page: number; excerpt: string }[];
+  toolCalls?: { name: string; status: "pending" | "done"; detail?: string }[];
   timestamp: string;
 }
 
@@ -115,4 +140,5 @@ export interface ConflictAlert {
   description: string;
   severity: "critical" | "high" | "medium" | "low";
   category: "timeline" | "exclusivity" | "payment" | "scope" | "other";
+  financialImpact?: { amount: number; currency: string };
 }
