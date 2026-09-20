@@ -20,8 +20,14 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/demo", { method: "POST" }).then(() => load());
+    load();
   }, []);
+
+  async function loadDemo() {
+    setLoading(true);
+    await fetch("/api/demo", { method: "POST" });
+    await load();
+  }
 
   async function load() {
     const res = await fetch("/api/contracts");
@@ -276,11 +282,20 @@ export default function Dashboard() {
               <Link href="/app/contracts" className="text-xs text-indigo-400 hover:text-indigo-300">View all →</Link>
             </div>
             {contracts.length === 0 ? (
-              <Link href="/app/upload" className="block glass rounded-xl p-12 text-center glass-hover transition group">
-                <Upload className="w-12 h-12 text-gray-600 mx-auto mb-4 group-hover:text-indigo-400 transition" />
-                <h4 className="text-lg font-semibold text-white mb-2">Upload your first contract</h4>
-                <p className="text-sm text-gray-400 max-w-md mx-auto">Drag & drop a PDF to get instant AI analysis, health scoring, benchmarking, and action proposals.</p>
-              </Link>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Link href="/app/upload" className="block glass rounded-xl p-10 text-center glass-hover transition group border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-cyan-500/5">
+                  <Upload className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold text-white mb-2">Upload your contract</h4>
+                  <p className="text-sm text-gray-400 max-w-sm mx-auto">Drag & drop a PDF/DOCX. Instant AI analysis, health scoring, risks, missing clauses & actions.</p>
+                  <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-indigo-300">Start now — no signup <ArrowUpRight className="w-3 h-3"/></div>
+                </Link>
+                <button onClick={loadDemo} className="glass rounded-xl p-10 text-center hover:border-indigo-500/30 transition group text-left">
+                  <Layers className="w-12 h-12 text-gray-500 mx-auto mb-4 group-hover:text-indigo-400 transition" />
+                  <h4 className="text-lg font-semibold text-white mb-2 text-center">Try with sample contracts</h4>
+                  <p className="text-sm text-gray-400 max-w-sm mx-auto text-center">Load 3 pre-analyzed sample contracts (MSA, Employment, NDA) to explore every feature risk-free.</p>
+                  <div className="mt-4 text-center text-xs text-gray-500">Takes 2 seconds</div>
+                </button>
+              </div>
             ) : (
               <div className="grid grid-cols-3 gap-4">
                 {contracts.map(c => (

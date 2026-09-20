@@ -1,15 +1,8 @@
 import { NextResponse } from "next/server";
 import { getContracts, deleteContract } from "@/lib/store";
-import { getDemoContracts } from "@/lib/demo-data";
 
-export async function GET(req: Request) {
-  let contracts = await getContracts();
-  // Auto-seed demo contracts on first visit so judges see a populated portfolio
-  if (contracts.length === 0) {
-    contracts = await getDemoContracts();
-    const { saveContracts } = await import("@/lib/store");
-    await saveContracts(contracts);
-  }
+export async function GET() {
+  const contracts = await getContracts();
   return NextResponse.json({ contracts });
 }
 

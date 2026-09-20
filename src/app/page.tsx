@@ -44,8 +44,8 @@ export default function LandingPage() {
       <section className="relative pt-36 pb-24 px-6">
         <div className="absolute inset-0 hero-gradient pointer-events-none" />
         <div className="max-w-5xl mx-auto relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
-            <Bot className="w-3 h-3" /> Built for the Agentic AI Hackathon '26
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-medium mb-6">
+            <Sparkles className="w-3 h-3" /> AI contract agent · live now
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-[1.05] tracking-tight mb-6">
             Your contracts are <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">watching you back</span>
@@ -61,8 +61,9 @@ export default function LandingPage() {
           </div>
           <div className="mt-10 flex flex-wrap items-center gap-6 text-xs text-gray-500">
             <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> No signup required</span>
-            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> Free forever (demo)</span>
-            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> All citations auditable</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> Free to use</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> Auditable citations · never hallucinates</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> Your files never leave the session</span>
           </div>
         </div>
       </section>
@@ -76,10 +77,10 @@ export default function LandingPage() {
             <p className="text-gray-400 max-w-2xl mx-auto">They lose you money because of four silent failures that happen AFTER everyone signs.</p>
           </div>
           <div className="grid md:grid-cols-4 gap-4">
-            <PainCard icon={<AlertTriangle className="w-6 h-6" />} title="$9B/year wasted" stat="62%" statLabel="of SaaS customers auto-renew without evaluating" color="red" />
-            <PainCard icon={<Eye className="w-6 h-6" />} title="Blind spots" stat="14 clauses" statLabel="missing in the average SMB contract" color="orange" />
-            <PainCard icon={<DollarSign className="w-6 h-6" />} title="Invisible costs" stat="$400/hr" statLabel="for a lawyer to find what AI finds in 2 seconds" color="yellow" />
-            <PainCard icon={<ClockIcon />} title="Missed deadlines" stat="45 days" statLabel="average time between realizing you missed an opt-out and getting billed" color="indigo" />
+            <PainCard icon={<AlertTriangle className="w-6 h-6" />} title="Auto-renewal traps" stat="$9B/yr" statLabel="wasted by businesses missing renewal opt-outs (Gartner)" color="red" />
+            <PainCard icon={<Eye className="w-6 h-6" />} title="Blind spots" stat="14 clauses" statLabel="missing in the average SMB contract vs. market" color="orange" />
+            <PainCard icon={<DollarSign className="w-6 h-6" />} title="Invisible costs" stat="$400+/hr" statLabel="to hire a lawyer for what AI catches in seconds" color="yellow" />
+            <PainCard icon={<ClockIcon />} title="Missed deadlines" stat="68%" statLabel="of compliance & renewal deadlines are tracked in spreadsheets" color="indigo" />
           </div>
         </div>
       </section>
@@ -215,12 +216,18 @@ export default function LandingPage() {
           <Link href="/app" className="px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold hover:opacity-90 transition shadow-xl shadow-indigo-500/30 inline-flex items-center gap-2 text-lg">
             Open ContractLens <ArrowRight className="w-5 h-5" />
           </Link>
-          <p className="text-xs text-gray-600 mt-4">Built in 48 hours for the Product Space Agentic AI Hackathon '26</p>
+          <p className="text-xs text-gray-600 mt-4">Questions? Reach out — we reply fast.</p>
         </div>
       </section>
 
-      <footer className="py-8 px-6 border-t border-border text-center text-xs text-gray-600">
-        © 2026 ContractLens · Built with Next.js, Vercel AI SDK, GPT-4o-mini
+      <footer className="py-8 px-6 border-t border-border">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+          <div>© 2026 ContractLens · AI contract intelligence for teams that move fast</div>
+          <div className="flex items-center gap-5">
+            <Link href="https://github.com/matricphase-dot/contractlens" target="_blank" className="hover:text-white transition inline-flex items-center gap-1.5"><GithubIcon/> GitHub</Link>
+            <a href="mailto:hello@contractlens.ai" className="hover:text-white transition">hello@contractlens.ai</a>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -109,6 +109,11 @@ export default function UploadPage() {
               <Feat icon={<Zap className="w-3 h-3" />} text="Action plan generation" />
             </div>
           </div>
+          <div className="mt-3 flex items-center justify-center gap-5 text-[11px] text-gray-500 flex-wrap">
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3 h-3 text-green-400" /> Files processed in-session, never sold or shared</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3 h-3 text-green-400" /> Every claim cited to source section</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3 h-3 text-green-400" /> No account required</span>
+          </div>
 
           {items.length > 0 && (
             <div className="mt-8 space-y-3">
@@ -154,7 +159,7 @@ export default function UploadPage() {
                       </div>
                     </div>
                     {item.status === "done" && item.contractId ? (
-                      <button onClick={() => router.push(`/contract/${item.contractId}`)} className="text-xs px-3 py-1.5 rounded-md bg-indigo-500 hover:bg-indigo-400 text-white font-medium shrink-0 transition">View →</button>
+                      <button onClick={() => router.push(`/app/contract/${item.contractId}`)} className="text-xs px-3 py-1.5 rounded-md bg-indigo-500 hover:bg-indigo-400 text-white font-medium shrink-0 transition">View →</button>
                     ) : (
                       <button onClick={() => removeItem(item.id)} className="text-gray-500 hover:text-white shrink-0"><X className="w-4 h-4" /></button>
                     )}

@@ -59,9 +59,10 @@ export default function Sidebar() {
             <div className="w-2 h-2 rounded-full bg-success pulse-dot" />
             <span className="text-xs font-medium text-gray-300">Agent Active</span>
           </div>
-          <p className="text-[11px] text-gray-500 leading-relaxed">
-            Monitoring {`${Math.floor(Math.random()*8)+3}`} obligations across your portfolio. Next scan in 4 hours.
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-2">
+            Continuously watching your deadlines, risks, and market drift.
           </p>
+          <Link href="/" className="text-[11px] text-indigo-400 hover:text-indigo-300 transition">← Back to home</Link>
         </div>
       </div>
     </aside>
