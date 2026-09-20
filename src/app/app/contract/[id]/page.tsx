@@ -96,7 +96,7 @@ function ContractDetail() {
   if (!contract) return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8 text-center text-gray-400">Contract not found. <Link href="/contracts" className="text-indigo-400">Back to contracts</Link></main>
+      <main className="flex-1 p-8 text-center text-gray-400">Contract not found. <Link href="/app/contracts" className="text-indigo-400">Back to contracts</Link></main>
     </div>
   );
 
@@ -111,7 +111,7 @@ function ContractDetail() {
       <main className="flex-1">
         <header className="border-b border-border bg-bg/40 backdrop-blur-sm sticky top-0 z-10">
           <div className="px-8 py-4">
-            <Link href="/contracts" className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white mb-2">
+            <Link href="/app/contracts" className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white mb-2">
               <ArrowLeft className="w-3 h-3" /> Back to contracts
             </Link>
             <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -139,7 +139,7 @@ function ContractDetail() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Link href={`/ask?contract=${contract.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-border hover:border-indigo-500 text-sm text-white transition">
+                <Link href={`/app/ask?contract=${contract.id}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface border border-border hover:border-indigo-500 text-sm text-white transition">
                   <Sparkles className="w-4 h-4 text-indigo-400" /> Ask about this
                 </Link>
               </div>

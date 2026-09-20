@@ -1,375 +1,267 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
-  FileText, AlertTriangle, Clock, Upload, ChevronRight, ShieldCheck, Zap, Layers,
-  CheckCircle2, Calendar, ArrowUpRight, TrendingUp, Activity, Bot, Brain,
-  Search, Database, GitBranch, Bell, Plus
+  Shield, Zap, AlertTriangle, DollarSign, Eye, ArrowRight, Check,
+  Sparkles, Layers, ChevronRight, Bot, TrendingUp, FileSearch
 } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
-import type { Contract } from "@/lib/types";
-import { severityColor, daysUntil, formatDate } from "@/lib/utils";
-import { detectCrossContractConflicts } from "@/lib/contract-utils";
+const GithubIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+);
 
-export default function Dashboard() {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [conflicts, setConflicts] = useState<any[]>([]);
-  const router = useRouter();
-
+export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    fetch("/api/demo", { method: "POST" }).then(() => load());
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  async function load() {
-    const res = await fetch("/api/contracts");
-    const data = await res.json();
-    setContracts(data.contracts || []);
-    setConflicts(detectCrossContractConflicts(data.contracts || []));
-    setLoading(false);
-  }
-
-  const upcomingObligations = contracts.flatMap(c =>
-    c.keyDates
-      .filter(kd => kd.date && new Date(kd.date).getTime() > Date.now() - 86400000 && !kd.dismissed)
-      .map(kd => ({ ...kd, contract: c }))
-  ).sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 5);
-
-  const allRisks = contracts.flatMap(c => c.riskClauses.map(r => ({ ...r, contract: c })));
-  const criticalRisks = allRisks.filter(r => r.severity === "critical" || r.severity === "high");
-  const totalObligations = contracts.reduce((sum, c) => sum + c.obligations.length, 0);
-  const completedObligations = contracts.reduce((sum, c) => sum + c.obligations.filter(o => o.completed).length, 0);
-  const upcomingCount = upcomingObligations.filter(k => daysUntil(k.date) <= 30 && daysUntil(k.date) >= 0).length;
-  const avgHealth = contracts.length > 0
-    ? Math.round(contracts.reduce((s,c) => s + (c.healthScore || 70), 0) / contracts.length)
-    : 0;
-
-  const suggestedActions = contracts.flatMap(c =>
-    c.actions.filter(a => a.status === "suggested").slice(0, 1).map(a => ({ ...a, contract: c }))
-  ).slice(0, 3);
-
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 hero-gradient">
-        <header className="border-b border-border bg-bg/40 backdrop-blur-sm sticky top-0 z-10">
-          <div className="px-8 py-4 flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                Dashboard
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 text-xs font-medium border border-green-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" /> Agent Monitoring
-                </span>
-              </h1>
-              <p className="text-sm text-gray-400">AI agent is watching {contracts.length} contracts · {totalObligations} obligations tracked · Next scan in 4 hours</p>
+    <div className="min-h-screen bg-bg text-gray-200 overflow-x-hidden">
+      {/* Nav */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${scrolled ? "bg-bg/80 backdrop-blur-lg border-b border-border" : ""}`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <Layers className="w-5 h-5 text-white" />
             </div>
-            <Link href="/upload" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-medium text-sm hover:opacity-90 transition shadow-lg shadow-indigo-500/20">
-              <Upload className="w-4 h-4" /> Upload Contract
+            <span className="font-bold text-white text-lg">ContractLens</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="https://github.com/matricphase-dot/contractlens" target="_blank" className="text-sm text-gray-400 hover:text-white transition inline-flex items-center gap-1.5">
+              <GithubIcon /> GitHub
+            </Link>
+            <Link href="/app" className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-medium hover:opacity-90 transition shadow-lg shadow-indigo-500/20 inline-flex items-center gap-1.5">
+              Launch App <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-        </header>
+        </div>
+      </nav>
 
-        <div className="p-8 space-y-6 fade-in">
-          {loading ? (
-            <div className="grid grid-cols-5 gap-4">
-              {[1,2,3,4,5].map(i => <div key={i} className="glass rounded-xl p-5 h-28 animate-pulse" />)}
-            </div>
-          ) : (
-            <div className="grid grid-cols-5 gap-4">
-              <StatCard icon={<FileText className="w-5 h-5" />} label="Contracts" value={contracts.length} accent="indigo" />
-              <HealthCard value={avgHealth} />
-              <StatCard icon={<Clock className="w-5 h-5" />} label="Due in 30 Days" value={upcomingCount} accent="cyan" />
-              <StatCard icon={<AlertTriangle className="w-5 h-5" />} label="High Risks" value={criticalRisks.length} accent="orange" />
-              <StatCard icon={<CheckCircle2 className="w-5 h-5" />} label="Obligations Done" value={`${completedObligations}/${totalObligations}`} accent="green" />
-            </div>
-          )}
+      {/* Hero */}
+      <section className="relative pt-36 pb-24 px-6">
+        <div className="absolute inset-0 hero-gradient pointer-events-none" />
+        <div className="max-w-5xl mx-auto relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
+            <Bot className="w-3 h-3" /> Built for the Agentic AI Hackathon '26
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold text-white leading-[1.05] tracking-tight mb-6">
+            Your contracts are <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">watching you back</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mb-8 leading-relaxed">
+            ContractLens is an AI agent that finds what's missing in your contracts, shows you what it costs you, and hands you the exact fix. Auto-renewals, uncapped liability, missing clauses, forgotten deadlines — quantified, prioritized, and acted on in seconds.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/app" className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-medium hover:opacity-90 transition shadow-lg shadow-indigo-500/30 inline-flex items-center gap-2 text-base">
+              Open the agent <ArrowRight className="w-5 h-5" />
+            </Link>
+            <a href="#how" className="px-6 py-3.5 rounded-xl bg-surface border border-border hover:border-indigo-500 text-white transition text-base">See how it works</a>
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-6 text-xs text-gray-500">
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> No signup required</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> Free forever (demo)</span>
+            <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-green-400" /> All citations auditable</span>
+          </div>
+        </div>
+      </section>
 
-          {/* Hero agent card */}
-          <div className="glass rounded-2xl p-6 border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 via-transparent to-cyan-500/10">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0 relative">
-                  <Bot className="w-6 h-6 text-white" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 border-2 border-bg pulse-dot" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-lg font-semibold text-white">ContractLens Agent</h2>
-                    <span className="text-xs text-indigo-300">· Perceive → Reason → Act → Monitor</span>
-                  </div>
-                  <p className="text-gray-400 text-sm max-w-2xl mb-3">
-                    Continuously analyzing your portfolio for deadlines, risks, market-standard deviations, and cross-contract conflicts.
-                    {suggestedActions.length > 0 && <span className="text-white"> <strong>{suggestedActions.length} actions</strong> are ready for your review.</span>}
-                  </p>
-                  {conflicts.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {conflicts.slice(0,3).map((alert, i) => (
-                        <span key={i} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${severityColor(alert.severity)}`}>
-                          <AlertTriangle className="w-3 h-3" /> {alert.description.slice(0,75)}...
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                <Link href="/ask" className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-surface border border-border hover:border-indigo-500 text-sm text-white transition">
-                  <Brain className="w-4 h-4 text-indigo-400" /> Talk to Agent
-                </Link>
-              </div>
-            </div>
+      {/* Pain */}
+      <section className="py-20 px-6 border-t border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-xs uppercase tracking-widest text-red-400 font-semibold mb-3">The problem</div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Contracts don't lose you money because they're hard to read.</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">They lose you money because of four silent failures that happen AFTER everyone signs.</p>
+          </div>
+          <div className="grid md:grid-cols-4 gap-4">
+            <PainCard icon={<AlertTriangle className="w-6 h-6" />} title="$9B/year wasted" stat="62%" statLabel="of SaaS customers auto-renew without evaluating" color="red" />
+            <PainCard icon={<Eye className="w-6 h-6" />} title="Blind spots" stat="14 clauses" statLabel="missing in the average SMB contract" color="orange" />
+            <PainCard icon={<DollarSign className="w-6 h-6" />} title="Invisible costs" stat="$400/hr" statLabel="for a lawyer to find what AI finds in 2 seconds" color="yellow" />
+            <PainCard icon={<ClockIcon />} title="Missed deadlines" stat="45 days" statLabel="average time between realizing you missed an opt-out and getting billed" color="indigo" />
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="how" className="py-24 px-6 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="text-xs uppercase tracking-widest text-indigo-400 font-semibold mb-3">How it works</div>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">An agent that acts, not just summarizes</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">Other tools tell you what's in a contract. ContractLens tells you what's MISSING, what it costs, and what to DO about it.</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
-            {/* Action Center */}
-            <div className="col-span-2 glass rounded-xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-white flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-indigo-400" /> Action Center
-                  <span className="text-xs text-gray-500 font-normal">· Agent-proposed next steps</span>
-                </h3>
+          <div className="grid md:grid-cols-3 gap-5">
+            <FeatureCard
+              icon={<DollarSign className="w-6 h-6" />}
+              color="red"
+              title="$$ at Risk"
+              desc="Every risky clause comes with a quantified dollar exposure. Auto-renewal? $150K lock-in. Uncapped indemnity? $500K worst case. You don't fix what you don't measure."
+            />
+            <FeatureCard
+              icon={<Eye className="w-6 h-6" />}
+              color="purple"
+              title="Blind Spot Radar"
+              desc="Scans against a 14-clause checklist for your contract type and finds MISSING clauses — data breach notification, DPAs, force majeure. This is what lawyers charge $400/hr to catch."
+            />
+            <FeatureCard
+              icon={<TrendingUp className="w-6 h-6" />}
+              color="cyan"
+              title="Market Benchmarking"
+              desc="Compares each clause against 2,400+ real contracts. 'Net-15 is tighter than market (68% are Net-30).' Negotiation ammo you can actually use."
+            />
+            <FeatureCard
+              icon={<Zap className="w-6 h-6" />}
+              color="emerald"
+              title="Action Center"
+              desc="One-click generation of negotiation playbooks with counter-clause language, vendor emails, calendar reminders, finance summaries, and counsel memos. Ready to copy-paste-send."
+            />
+            <FeatureCard
+              icon={<Shield className="w-6 h-6" />}
+              color="indigo"
+              title="Cross-Contract Intelligence"
+              desc="Looks across your whole portfolio to find clustered renewals, payment concentration, fragmented jurisdictions, and regulatory gaps no single document review catches."
+            />
+            <FeatureCard
+              icon={<FileSearch className="w-6 h-6" />}
+              color="orange"
+              title="Natural-Language QA + Citations"
+              desc="Ask 'What's my exposure?' or 'What clauses are missing?' and get answers grounded in source sections and page numbers. No hand-wavy AI claims."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Product mockup */}
+      <section className="py-20 px-6 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Built for humans who don't read 40 pages of legalese</h2>
+            <p className="text-gray-400">Every feature ties back to one question: what is the user going to DO next?</p>
+          </div>
+          <div className="glass rounded-2xl p-2 shadow-2xl shadow-indigo-500/10 border-indigo-500/20">
+            <div className="rounded-xl overflow-hidden bg-surface">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500/70" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/70" />
+                </div>
+                <div className="flex-1 text-center text-xs text-gray-500 font-mono">contractlens.ai/app</div>
               </div>
-              {suggestedActions.length === 0 && contracts.length === 0 ? (
-                <div className="text-center py-12 text-gray-500 text-sm">Upload a contract to see agent-proposed actions.</div>
-              ) : (
-                <div className="space-y-2">
-                  {contracts.flatMap(c => c.actions.filter(a => a.status === "suggested").slice(0, 2).map(a => ({ ...a, contract: c }))).slice(0, 5).map((a, i) => (
-                    <div key={i} className="p-4 rounded-lg bg-surface/60 border border-border-light hover:border-indigo-500/50 transition">
-                      <div className="flex items-start gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                          {a.type === "email-draft" && <Mail className="w-4 h-4 text-indigo-400" />}
-                          {a.type === "calendar-event" && <Calendar className="w-4 h-4 text-cyan-400" />}
-                          {a.type === "negotiation-playbook" && <GitBranch className="w-4 h-4 text-orange-400" />}
-                          {a.type === "counsel-review" && <ShieldCheck className="w-4 h-4 text-red-400" />}
-                          {a.type === "summary-report" && <FileText className="w-4 h-4 text-green-400" />}
-                          {a.type === "reminder" && <Bell className="w-4 h-4 text-yellow-400" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium text-white text-sm">{a.title}</span>
-                            <span className="text-[10px] text-gray-500 px-1.5 py-0.5 rounded bg-surface border border-border">{a.contract.title}</span>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-1">{a.description}</p>
-                        </div>
-                        <button onClick={() => router.push(`/contract/${a.contract.id}?action=${a.id}`)} className="text-xs px-3 py-1.5 rounded-md bg-indigo-500 hover:bg-indigo-400 text-white font-medium shrink-0 transition">
-                          Run action
-                        </button>
-                      </div>
+              <div className="grid md:grid-cols-[220px_1fr] min-h-[400px]">
+                <div className="border-r border-border p-3 hidden md:block">
+                  <div className="flex items-center gap-2 mb-5 mt-2">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500" />
+                    <div>
+                      <div className="text-sm font-bold text-white">ContractLens</div>
+                      <div className="text-[9px] text-gray-500 uppercase">AI Intel</div>
+                    </div>
+                  </div>
+                  {["Dashboard", "Upload Contracts", "All Contracts", "Timeline", "Ask Contracts", "Compare"].map((l, i) => (
+                    <div key={l} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs mb-1 ${i===0 ? "bg-gradient-to-r from-indigo-500/20 to-cyan-500/10 text-white border border-indigo-500/30" : "text-gray-500"}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${i===0?"bg-indigo-400":"bg-gray-600"}`} />
+                      {l}
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
-
-            {/* Portfolio health */}
-            <div className="glass rounded-xl p-6">
-              <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-                <Activity className="w-4 h-4 text-indigo-400" /> Portfolio Health
-              </h3>
-              <div className="space-y-3">
-                {contracts.map(c => (
-                  <div key={c.id} className="cursor-pointer" onClick={() => router.push(`/contract/${c.id}`)}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-gray-300 truncate flex-1">{c.title}</span>
-                      <span className={`text-sm font-bold shrink-0 ml-2 ${
-                        c.healthScore >= 80 ? "text-green-400" :
-                        c.healthScore >= 65 ? "text-yellow-400" :
-                        "text-red-400"
-                      }`}>{c.healthScore}</span>
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-14 h-14 rounded-full relative">
+                      <svg className="w-14 h-14 -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" stroke="#1f2937" strokeWidth="8" fill="none"/>
+                        <circle cx="50" cy="50" r="42" stroke="#ef4444" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={`${(49/100)*264} 264`}/>
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center text-xl font-bold text-red-400">49</div>
                     </div>
-                    <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${
-                        c.healthScore >= 80 ? "bg-green-500" :
-                        c.healthScore >= 65 ? "bg-yellow-500" :
-                        "bg-red-500"
-                      }`} style={{ width: `${c.healthScore}%` }} />
+                    <div>
+                      <div className="text-xs text-red-400 uppercase font-semibold mb-1">Quantified downside exposure</div>
+                      <div className="text-3xl font-bold text-white">$789,500</div>
+                      <div className="text-xs text-gray-500">across 5 scenarios on this contract</div>
                     </div>
                   </div>
-                ))}
-                {contracts.length === 0 && <div className="text-center py-8 text-gray-500 text-xs">No contracts yet</div>}
-              </div>
-              <div className="mt-4 pt-4 border-t border-border text-[11px] text-gray-500 flex items-center justify-between">
-                <span>Health score based on risk flags, market benchmarks, completeness</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Two column: deadlines + agent thinking */}
-          <div className="grid grid-cols-3 gap-6">
-            <div className="col-span-2 glass rounded-xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-white flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-indigo-400" /> Upcoming Key Dates
-                </h3>
-                <Link href="/timeline" className="text-xs text-indigo-400 hover:text-indigo-300">View timeline →</Link>
-              </div>
-              {upcomingObligations.length === 0 ? (
-                <div className="text-center py-12 text-gray-500 text-sm">No upcoming deadlines.</div>
-              ) : (
-                <div className="space-y-2">
-                  {upcomingObligations.map((kd, i) => {
-                    const days = daysUntil(kd.date);
-                    return (
-                      <div key={i} className="flex items-center gap-4 p-3 rounded-lg bg-surface/60 hover:bg-surface-2/60 transition border border-transparent hover:border-border-light cursor-pointer" onClick={() => router.push(`/contract/${kd.contract.id}`)}>
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                          days < 0 ? "bg-gray-500/20 text-gray-400" :
-                          days <= 14 ? "bg-red-500/20 text-red-400" :
-                          days <= 45 ? "bg-orange-500/20 text-orange-400" :
-                          "bg-green-500/20 text-green-400"
-                        }`}>
-                          {days < 0 ? "PAST" : `${days}d`}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-white text-sm truncate">{kd.label}</div>
-                          <div className="text-xs text-gray-400 truncate">{kd.contract.title}</div>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <div className="text-xs text-gray-400">{formatDate(kd.date)}</div>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-600 shrink-0" />
+                  <div className="space-y-2">
+                    {[
+                      {l:"Auto-renewal lock-in", v:"$150,000", c:"red"},
+                      {l:"Uncapped indemnification", v:"$500,000", c:"red"},
+                      {l:"Late payment (annualized)", v:"$27,000", c:"yellow"},
+                      {l:"Early termination cost", v:"$37,500", c:"yellow"},
+                      {l:"Custom IP re-engineering", v:"$75,000", c:"yellow"},
+                    ].map((r, i) => (
+                      <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-surface-2/40 border border-border/50">
+                        <div className={`w-2 h-2 rounded-full ${r.c==="red"?"bg-red-400":"bg-yellow-400"}`} />
+                        <div className="flex-1 text-xs text-gray-300">{r.l}</div>
+                        <div className={`text-xs font-bold ${r.c==="red"?"text-red-400":"text-yellow-400"}`}>{r.v}</div>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+                  <button className="mt-4 w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-sm font-medium inline-flex items-center justify-center gap-2">
+                    <Sparkles className="w-4 h-4" /> Run Negotiation Playbook
+                  </button>
                 </div>
-              )}
-            </div>
-
-            {/* Agent thinking feed */}
-            <div className="glass rounded-xl p-6">
-              <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-                <Brain className="w-4 h-4 text-indigo-400" /> Agent Activity
-              </h3>
-              <div className="space-y-3 max-h-[340px] overflow-y-auto pr-1">
-                {contracts.slice(0,1).flatMap(c => c.agentEvents || []).slice().reverse().slice(0, 7).map((e, i) => {
-                  const iconMap: Record<string, any> = { parse: FileText, extract: Search, classify: Layers, benchmark: TrendingUp, "cross-reference": Database, recommend: Zap, monitor: Bell };
-                  const Icon = iconMap[e.stage] || Activity;
-                  const isLatest = i === 0;
-                  return (
-                    <div key={e.id} className="flex gap-2.5">
-                      <div className="flex flex-col items-center shrink-0">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                          isLatest ? "bg-green-500/20 text-green-400" : "bg-indigo-500/15 text-indigo-400"
-                        }`}>
-                          {isLatest ? <CheckCircle2 className="w-3 h-3" /> : <Icon className="w-3 h-3" />}
-                        </div>
-                        {i < 6 && <div className="w-px flex-1 bg-border mt-1" />}
-                      </div>
-                      <div className="pb-3 flex-1">
-                        <div className="text-xs text-white font-medium leading-tight">{e.message}</div>
-                        {e.detail && <div className="text-[10px] text-gray-500 mt-0.5">{e.detail}</div>}
-                      </div>
-                    </div>
-                  );
-                })}
               </div>
             </div>
-          </div>
-
-          {/* Contracts grid */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-white flex items-center gap-2">
-                <Layers className="w-4 h-4 text-indigo-400" /> Your Contracts
-              </h3>
-              <Link href="/contracts" className="text-xs text-indigo-400 hover:text-indigo-300">View all →</Link>
-            </div>
-            {contracts.length === 0 ? (
-              <Link href="/upload" className="block glass rounded-xl p-12 text-center glass-hover transition group">
-                <Upload className="w-12 h-12 text-gray-600 mx-auto mb-4 group-hover:text-indigo-400 transition" />
-                <h4 className="text-lg font-semibold text-white mb-2">Upload your first contract</h4>
-                <p className="text-sm text-gray-400 max-w-md mx-auto">Drag & drop a PDF to get instant AI analysis, health scoring, benchmarking, and action proposals.</p>
-              </Link>
-            ) : (
-              <div className="grid grid-cols-3 gap-4">
-                {contracts.map(c => (
-                  <Link key={c.id} href={`/contract/${c.id}`} className="glass rounded-xl p-5 glass-hover transition block group">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500/20 to-cyan-500/20 border border-indigo-500/30 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-indigo-400" />
-                      </div>
-                      <div className={`text-lg font-bold ${
-                        c.healthScore >= 80 ? "text-green-400" :
-                        c.healthScore >= 65 ? "text-yellow-400" :
-                        "text-red-400"
-                      }`}>{c.healthScore}<span className="text-[10px] text-gray-500">/100</span></div>
-                    </div>
-                    <h4 className="font-semibold text-white text-sm mb-1 truncate group-hover:text-indigo-300 transition">{c.title}</h4>
-                    <p className="text-xs text-gray-500 mb-3">{c.contractType}</p>
-                    <div className="flex items-center gap-3 text-[11px] text-gray-400">
-                      <span>{c.obligations.length} obligations</span>
-                      <span>·</span>
-                      <span className="text-orange-400">{c.riskClauses.filter(r=>r.severity==="high"||r.severity==="critical").length} risks</span>
-                      <span>·</span>
-                      <span>{c.actions.filter(a=>a.status==="suggested").length} actions</span>
-                    </div>
-                  </Link>
-                ))}
-                <Link href="/upload" className="glass rounded-xl p-5 border-dashed border-gray-700 flex items-center justify-center text-gray-500 hover:text-indigo-400 hover:border-indigo-500/50 transition min-h-[158px]">
-                  <div className="text-center">
-                    <Plus className="w-6 h-6 mx-auto mb-2" />
-                    <div className="text-xs">Add contract</div>
-                  </div>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-6 border-t border-border">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-5">Stop getting surprised by your contracts.</h2>
+          <p className="text-gray-400 text-lg mb-8">Upload your first contract in 10 seconds. Free. No signup. No credit card.</p>
+          <Link href="/app" className="px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-semibold hover:opacity-90 transition shadow-xl shadow-indigo-500/30 inline-flex items-center gap-2 text-lg">
+            Open ContractLens <ArrowRight className="w-5 h-5" />
+          </Link>
+          <p className="text-xs text-gray-600 mt-4">Built in 48 hours for the Product Space Agentic AI Hackathon '26</p>
+        </div>
+      </section>
+
+      <footer className="py-8 px-6 border-t border-border text-center text-xs text-gray-600">
+        © 2026 ContractLens · Built with Next.js, Vercel AI SDK, GPT-4o-mini
+      </footer>
     </div>
   );
 }
 
-function StatCard({ icon, label, value, sub, accent }: { icon: React.ReactNode; label: string; value: number | string; sub?: string; accent: "indigo" | "cyan" | "orange" | "green" }) {
-  const colors = {
-    indigo: "from-indigo-500/20 to-indigo-500/5 text-indigo-400 border-indigo-500/30",
-    cyan: "from-cyan-500/20 to-cyan-500/5 text-cyan-400 border-cyan-500/30",
+function ClockIcon() { return <ClockSvg />; }
+function ClockSvg() { return (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+); }
+
+function PainCard({ icon, title, stat, statLabel, color }: any) {
+  const colors: any = {
+    red: "from-red-500/20 to-red-500/5 text-red-400 border-red-500/30",
     orange: "from-orange-500/20 to-orange-500/5 text-orange-400 border-orange-500/30",
-    green: "from-green-500/20 to-green-500/5 text-green-400 border-green-500/30",
+    yellow: "from-yellow-500/20 to-yellow-500/5 text-yellow-400 border-yellow-500/30",
+    indigo: "from-indigo-500/20 to-indigo-500/5 text-indigo-400 border-indigo-500/30",
   };
   return (
     <div className="glass rounded-xl p-5">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">{label}</span>
-        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${colors[accent]} border flex items-center justify-center`}>
-          {icon}
-        </div>
-      </div>
-      <div className="text-3xl font-bold text-white">{value}</div>
-      {sub && <div className="text-xs text-gray-500 mt-1">{sub}</div>}
+      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colors[color]} border flex items-center justify-center mb-4`}>{icon}</div>
+      <div className="text-2xl font-bold text-white mb-1">{stat}</div>
+      <div className="text-xs text-gray-500 mb-3">{statLabel}</div>
+      <div className="text-sm text-gray-300 font-medium">{title}</div>
     </div>
   );
 }
 
-function HealthCard({ value }: { value: number }) {
-  const color = value >= 80 ? "text-green-400" : value >= 65 ? "text-yellow-400" : "text-red-400";
-  const ring = value >= 80 ? "from-green-500/20 to-green-500/5 border-green-500/30 text-green-400" :
-               value >= 65 ? "from-yellow-500/20 to-yellow-500/5 border-yellow-500/30 text-yellow-400" :
-               "from-red-500/20 to-red-500/5 border-red-500/30 text-red-400";
+function FeatureCard({ icon, title, desc, color }: any) {
+  const colors: any = {
+    red: "text-red-400 bg-red-500/10 border-red-500/30",
+    purple: "text-purple-400 bg-purple-500/10 border-purple-500/30",
+    cyan: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
+    emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
+    indigo: "text-indigo-400 bg-indigo-500/10 border-indigo-500/30",
+    orange: "text-orange-400 bg-orange-500/10 border-orange-500/30",
+  };
   return (
-    <div className="glass rounded-xl p-5">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">Portfolio Health</span>
-        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${ring} border flex items-center justify-center`}>
-          <Activity className="w-4 h-4" />
-        </div>
-      </div>
-      <div className="flex items-baseline gap-2">
-        <div className={`text-3xl font-bold ${color}`}>{value}</div>
-        <div className="text-xs text-gray-500">/100</div>
-      </div>
-      <div className="text-xs text-gray-500 mt-1">
-        {value >= 80 ? "Looking good" : value >= 65 ? "Needs attention" : "Review recommended"}
-      </div>
+    <div className="glass rounded-xl p-6 hover:border-indigo-500/30 transition group">
+      <div className={`w-11 h-11 rounded-lg bg-gradient-to-br ${colors[color]} border flex items-center justify-center mb-4`}>{icon}</div>
+      <h3 className="font-semibold text-white text-lg mb-2 group-hover:text-indigo-300 transition">{title}</h3>
+      <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
     </div>
-  );
-}
-
-function Mail({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-    </svg>
   );
 }

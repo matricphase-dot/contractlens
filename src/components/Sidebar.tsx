@@ -6,12 +6,12 @@ import { FileText, Upload, Clock, MessageSquare, GitCompare, AlertTriangle, Home
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { href: "/", icon: Home, label: "Dashboard" },
-  { href: "/upload", icon: Upload, label: "Upload Contracts" },
-  { href: "/contracts", icon: FileText, label: "All Contracts" },
-  { href: "/timeline", icon: Clock, label: "Obligation Timeline" },
-  { href: "/ask", icon: MessageSquare, label: "Ask Contracts" },
-  { href: "/compare", icon: GitCompare, label: "Compare Versions" },
+  { href: "/app", icon: Home, label: "Dashboard" },
+  { href: "/app/upload", icon: Upload, label: "Upload Contracts" },
+  { href: "/app/contracts", icon: FileText, label: "All Contracts" },
+  { href: "/app/timeline", icon: Clock, label: "Obligation Timeline" },
+  { href: "/app/ask", icon: MessageSquare, label: "Ask Contracts" },
+  { href: "/app/compare", icon: GitCompare, label: "Compare Versions" },
 ];
 
 export default function Sidebar() {
@@ -20,7 +20,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 shrink-0 border-r border-border bg-surface/50 backdrop-blur-sm flex flex-col h-screen sticky top-0">
       <div className="p-5 border-b border-border">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/app" className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
             <Layers className="w-5 h-5 text-white" />
           </div>
@@ -33,7 +33,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 p-3 space-y-1">
         {nav.map((item) => {
-          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+          const active = pathname === item.href || (item.href !== "/app" && pathname.startsWith(item.href));
           const Icon = item.icon;
           return (
             <Link
